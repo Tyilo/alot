@@ -60,7 +60,7 @@ class TestComposeCommand(unittest.TestCase):
         envelope.account = self._make_account_mock()
         cmd = g_commands.ComposeCommand(envelope=envelope)
 
-        cmd._set_gpg_sign(mock.Mock(), account)
+        cmd._set_gpg_sign(mock.Mock())
 
         self.assertTrue(envelope.sign)
         self.assertIs(envelope.sign_key, mock.sentinel.gpg_key)
@@ -70,7 +70,7 @@ class TestComposeCommand(unittest.TestCase):
         envelope.account = self._make_account_mock(sign_by_default=False)
         cmd = g_commands.ComposeCommand(envelope=envelope)
 
-        cmd._set_gpg_sign(mock.Mock(), account)
+        cmd._set_gpg_sign(mock.Mock())
 
         self.assertFalse(envelope.sign)
         self.assertIs(envelope.sign_key, None)
@@ -80,7 +80,7 @@ class TestComposeCommand(unittest.TestCase):
         envelope.account = self._make_account_mock(gpg_key=None)
         cmd = g_commands.ComposeCommand(envelope=envelope)
 
-        cmd._set_gpg_sign(mock.Mock(), account)
+        cmd._set_gpg_sign(mock.Mock())
 
         self.assertFalse(envelope.sign)
         self.assertIs(envelope.sign_key, None)
@@ -106,7 +106,7 @@ class TestComposeCommand(unittest.TestCase):
         self.assertEqual(body, cmd.envelope.body)
 
     @utilities.async_test
-    async def test_set_from_single_account(self):
+    async def test_get_sender_details_single_account(self):
         # issue #1277
         envelope = self._make_envelope_mock()
         del envelope.headers['From']
@@ -117,8 +117,8 @@ class TestComposeCommand(unittest.TestCase):
 
         cmd._set_envelope()
         with mock.patch('alot.commands.globals.settings.get_accounts',
-                        mock.Mock(return_value=[account])):
-            await cmd._set_from(mock.Mock())
+                        mock.Mock(return_value=[envelope.account])):
+            await cmd._get_sender_details(mock.Mock())
 
 class TestExternalCommand(unittest.TestCase):
 
